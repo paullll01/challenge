@@ -22,7 +22,7 @@ class TicketService implements ITicketService
         return $this->ticketRepository->create($createTicketRequest);
     }
 
-    public function getTicketById(int $id): Ticket
+    public function getTicketById(int $id): ?Ticket
     {
         return $this->ticketRepository->findById($id);
     }

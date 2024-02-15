@@ -13,7 +13,7 @@ interface ITicketRepository
     public function create(CreateTicketRequest $createTicketRequest) : Ticket;
 
     public function update(UpdateTicketRequest $updateTicketRequest): Ticket;
-    public function findById(int $id): Ticket;
+    public function findById(int $id): ?Ticket;
     public function findOpenTickets(): LengthAwarePaginator;
     public function findClosedTickets(): LengthAwarePaginator;
     public function findUserTickets($email): LengthAwarePaginator;

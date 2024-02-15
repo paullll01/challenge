@@ -24,7 +24,7 @@ class TicketRepository implements ITicketRepository
         return $ticket;
     }
 
-    public function findById(int $id): Ticket
+    public function findById(int $id): ?Ticket
     {
         return Ticket::find($id);
     }  

@@ -2,45 +2,40 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
 use App\Models\Ticket;
 use App\DTO\TicketResponse;
 use Illuminate\Console\Command;
-use App\Values\Ticket\CreateTicketRequest;
-use App\Services\ApplicationServices\CreateTicketService;
+use App\Values\Ticket\UpdateTicketRequest;
+use App\Services\ApplicationServices\UpdateTicketService;
 
-
-class CreateTicket extends Command
+class UpdateTicket extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'create:ticket';
+    protected $signature = 'update:ticket';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generates a new ticket';
+    protected $description = 'Update a ticket status';
 
     /**
      * Execute the console command.
      */
-    public function handle(CreateTicketService $createTicketService)
-    {    
-        $user = User::latest()->first();
-        
-        $ticketData = Ticket::factory()->make([
-            'user_email' => $user->email,
-            'user_name' => $user->name,
-        ]);
+    public function handle(UpdateTicketService $updateTicketService)
+    {
+        $ticketData = Ticket::where('status', false)->orderBy('created_at')->first();
 
-        $createTicket = CreateTicketRequest::validateAndCreate($ticketData);
+        $ticketData->setStatus(true);
 
-        $ticket = $createTicketService->execute($createTicket);
+        $updateTicketRequest = UpdateTicketRequest::validateAndCreate($ticketData);
+
+        $ticket = $updateTicketService->execute($updateTicketRequest);
 
         $ticketResponse = new TicketResponse(
             id: $ticket->getId(),
@@ -50,9 +45,9 @@ class CreateTicket extends Command
             user_email: $ticket->getUserEmail(),
             status: $ticket->getStatus()
         );
-        
-        $this->info('Ticket created successfully');
+
+        $this->info('Ticket updated successfully');
         $this->line(json_encode($ticketResponse, JSON_PRETTY_PRINT));
-        
+
     }
 }
